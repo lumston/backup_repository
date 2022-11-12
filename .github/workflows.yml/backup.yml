@@ -3,10 +3,11 @@
 name: backup
 env:
   variables: 
-    repo_source: "localrepo"
+    repo_source: "https://github.com/lumston/backup_repository"
     repo_target: "targetrepo"
 
 # Controls when the workflow will run
 phases:
   check_source:
-    - echo "HolaMundo"
+    - echo "${S3_BUCKET}"
+    - git pull ${S3_BUCKET}
