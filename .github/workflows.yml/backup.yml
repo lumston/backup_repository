@@ -1,0 +1,12 @@
+# This workflow allows to check if aws credentials exists in github repositories
+
+name: backup
+env:
+  variables: 
+    repo_source: "localrepo"
+    repo_target: "targetrepo"
+
+# Controls when the workflow will run
+phases:
+  check_source:
+    - echo "HolaMundo"
