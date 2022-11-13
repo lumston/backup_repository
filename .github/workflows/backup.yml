@@ -33,6 +33,6 @@ jobs:
       # Runs a set of commands using the runners shell
       - name: Run a multi-line script
         run: |
-          echo el repo origen es: $source
+          echo el repo origen es: $USER_CODECOMMIT
           echo test, and deploy your project.
           git push https://${USER_CODECOMMIT}:{PASSWORD_CODECOMMIT}@git-codecommit.us-east-1.amazonaws.com/v1/repos/$repoName --all
