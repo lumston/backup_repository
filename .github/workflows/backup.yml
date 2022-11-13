@@ -35,4 +35,4 @@ jobs:
       - name: Run a multi-line script
         run: |
           ls -la
-          git push https://$user:$password@git-codecommit.us-east-1.amazonaws.com/v1/repos/$repoName --all
+          git clone --mirror https://$user:$password@git-codecommit.us-east-1.amazonaws.com/v1/repos/$repoName --all
