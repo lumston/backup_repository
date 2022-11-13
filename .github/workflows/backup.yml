@@ -35,4 +35,4 @@ jobs:
         run: |
           echo el repo origen es: $source
           echo test, and deploy your project.
-          git push https://${{USER_CODECOMMIT}}:{{PASSWORD_CODECOMMIT}}@git-codecommit.us-east-1.amazonaws.com/v1/repos/$repoName --all
+          git push https://${USER_CODECOMMIT}:{PASSWORD_CODECOMMIT}@git-codecommit.us-east-1.amazonaws.com/v1/repos/$repoName --all
