@@ -12,8 +12,8 @@ on:
 env:
   repoName: ${{ github.event.repository.name }}
   source: https://github.com/lumston/${{ github.event.repository.name }}
-  user: ${{ secrets.USER_CODECOMMIT }}
-  password: ${{ secrets.PASSWORD_CODECOMMIT }}
+  user: ${{secrets.USER_CODECOMMIT}}
+  password: ${{secrets.PASSWORD_CODECOMMIT}}
   
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
@@ -35,4 +35,4 @@ jobs:
       - name: Run a multi-line script
         run: |
           ls -la
-          git clone --mirror https://$user:$password@git-codecommit.us-east-1.amazonaws.com/v1/repos/$repoName
+          git clone https://$user:$password@git-codecommit.us-east-1.amazonaws.com/v1/repos/$repoName
