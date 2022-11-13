@@ -10,6 +10,7 @@ on:
   # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
 env:
+  repoName: ${{ github.event.repository.name }}
   source: https://github.com/lumston/${{ github.event.repository.name }}
   taget: "destino"
   
@@ -34,4 +35,4 @@ jobs:
         run: |
           echo el repo origen es: $source
           echo test, and deploy your project.
-          ls -la
+          git push https://${{USER_CODECOMMIT}}:{{PASSWORD_CODECOMMIT}}@git-codecommit.us-east-1.amazonaws.com/v1/repos/$repoName --all
