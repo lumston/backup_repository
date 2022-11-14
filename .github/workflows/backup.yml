@@ -11,7 +11,7 @@ on:
   workflow_dispatch:
 env:
   repoName: ${{ github.event.repository.name }}
-  source: https://${{secrets.GITHUBKEY}}@github.com/lumston/${{ github.event.repository.name }}
+  #source: https://${{secrets.GITHUBKEY}}@github.com/lumston/${{ github.event.repository.name }}
   user: ${{secrets.USER_CODECOMMIT}}
   password: ${{secrets.PASSWORD_CODECOMMIT}}
   
@@ -34,6 +34,7 @@ jobs:
       # Runs a set of commands using the runners shell
       - name: Run a multi-line script
         run: |
-          git clone --mirror $source $repoName
+          #git clone --mirror $source $repoName
+          cp -R * $repoName
           cd $repoName
           git push https://$user:$password@git-codecommit.us-east-1.amazonaws.com/v1/repos/$repoName --all
