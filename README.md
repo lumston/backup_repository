@@ -7,14 +7,7 @@ When you create a user and password in AWS the password could be genereted with 
 If you have special characters replace those them for next:
 https://en.wikipedia.org/wiki/Percent-encoding#Percent-encoding_reserved_characters
 
-
-Reserved characters after percent-encoding
-	  *	  +	  ,	  /	  :	  ;	  =	  ?	  @	  [     ]
-	%2A	%2B	%2C	%2F	%3A	%3B	%3D	%3F	%40	%5B	%5D
   
-|Header1 |Header2  | Header3|
---- | --- | ---|
-|data1|data2|data3|
 
 |␣ | ! | #| $ | % | & | '|  ( | ) | * | + | , | / | : | ; |  = | ? | @ | [ | ] |
 ---| --- |--- |--- | ---| ---| ---| ---| ---| ---| ---| ---| ---| ---| ---| ---| ---| ---| ---| ---|
