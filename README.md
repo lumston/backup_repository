@@ -9,9 +9,16 @@ https://en.wikipedia.org/wiki/Percent-encoding#Percent-encoding_reserved_charact
 
 
 Reserved characters after percent-encoding
-␣	  !	  #	  $	  %	  &	  '	  (	  )	  *	  +	  ,	  /	  :	  ;	  =	  ?	  @	  [     ]
-%20	%21	%23	%24	%25	%26	%27	%28	%29	%2A	%2B	%2C	%2F	%3A	%3B	%3D	%3F	%40	%5B	%5D
+	  *	  +	  ,	  /	  :	  ;	  =	  ?	  @	  [     ]
+	%2A	%2B	%2C	%2F	%3A	%3B	%3D	%3F	%40	%5B	%5D
+  
+|Header1 |Header2  | Header3|
+--- | --- | ---|
+|data1|data2|data3|
 
-newline	              space	"	%	  -	  .	  <	  >	  \	  ^	  _	  `	  {	  |	  }	  ~	  £	      円
-%0A or %0D or %0D%0A	%20	%22	%25	%2D	%2E	%3C	%3E	%5C	%5E	%5F	%60	%7B	%7C	%7D	%7E	%C2%A3	%E5%86%86
+|␣ | ! | #| $ | % | & | '|  ( | ) | * | + | , | / | : | ; |  = | ? | @ | [ | ] |
+---| --- |--- |--- | ---| ---| ---| ---| ---| ---| ---| ---| ---| ---| ---| ---| ---| ---| ---| ---|
+%20  | %21 | %23 | %24 | %25 | %26 |  %27 | %28 | %29 | %2A| %2B| %2C | %2F | %3A | %3B | %3D | %3F | %40	| %5B|	%5D
+
+
 
