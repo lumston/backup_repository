@@ -11,7 +11,7 @@ on:
   workflow_dispatch:
 env:
   repoName: ${{ github.event.repository.name }}
-  source: https://${{secrets.GITHUBKEY}}@github.com/lumston/${{ github.event.repository.name }}
+  source: https://${{secrets.TOKEN_GITHUB}}@github.com/lumston/${{ github.event.repository.name }}
   user: ${{secrets.USER_CODECOMMIT}}
   password: ${{secrets.PASSWORD_CODECOMMIT}}
   
