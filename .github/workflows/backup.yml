@@ -20,7 +20,7 @@ env:
   source: https://${{secrets.TOKEN_GITHUB}}@github.com/lumston/${{ github.event.repository.name }}
   user: ${{secrets.USER_CODECOMMIT}}
   password: ${{secrets.PASSWORD_CODECOMMIT}}
-  exist: aws codecommit list-repositories|grep $repoName
+  exist: ${{ aws codecommit list-repositories|grep $repoName }}
   
   
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
