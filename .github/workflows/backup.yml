@@ -30,11 +30,10 @@ jobs:
 
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
+      run: |
+          exist=$(aws codecommit list-repositories|grep $repoName)
+          echo $exist
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - uses: actions/checkout@v3
       # Run script 
-      # This script upload changes on codeCommit
-      - name: Run a multi-line script
-        run: |
-          exist=$(aws codecommit list-repositories|grep $repoName)
-          echo $exist
+      # This script upload changes 
