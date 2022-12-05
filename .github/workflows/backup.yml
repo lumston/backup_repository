@@ -39,11 +39,11 @@ jobs:
           exist=$(aws codecommit list-repositories|grep $repoName)
           if [ "$exist" = "" ];
             then
-            echo $exist
-            echo "String is empty."
+              echo $exist
+              echo "String is empty."
           else
-            echo $exist
-            echo "String is not empty."
+              echo $exist
+              echo "String is not empty."
           fi
           git clone --mirror $source $repoName
           cd $repoName
