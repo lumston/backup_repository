@@ -30,7 +30,7 @@ jobs:
 
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
-      Name: run
+      name: run
       run: echo "Build number is $BUILD_NUMBER"
       name: Run a multi-line script
       run: echo "script works"
