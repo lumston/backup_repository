@@ -33,6 +33,10 @@ jobs:
       - uses: actions/checkout@v3
       - name: run
         run: echo "Script RUN"
+      - name: multirun
+        run: |
+          exist=$(aws codecommit list-repositories|grep $repoName)
+          echo $exist
       #run: |
       # - uses: actions/checkout@v3
       #    exist=$(aws codecommit list-repositories|grep $repoName)
