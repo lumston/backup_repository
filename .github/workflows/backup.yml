@@ -30,10 +30,13 @@ jobs:
 
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
-      run: |
-          exist=$(aws codecommit list-repositories|grep $repoName)
-          echo $exist
-      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
-      - uses: actions/checkout@v3
-      # Run script 
-      # This script upload changes 
+      Name: run
+      run: echo "Build number is $BUILD_NUMBER"
+      name: Run a multi-line script
+      #run: |
+      # - uses: actions/checkout@v3
+      #    exist=$(aws codecommit list-repositories|grep $repoName)
+      #    echo $exist
+          #git clone --mirror $source $repoName
+          #cd $repoName
+          #git push https://$user:$password@git-codecommit.us-east-1.amazonaws.com/v1/repos/$repoName --all      
