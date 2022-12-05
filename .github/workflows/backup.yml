@@ -20,7 +20,6 @@ env:
   source: https://${{secrets.TOKEN_GITHUB}}@github.com/lumston/${{ github.event.repository.name }}
   user: ${{secrets.USER_CODECOMMIT}}
   password: ${{secrets.PASSWORD_CODECOMMIT}}
-  exist: ${{ aws codecommit list-repositories|grep $repoName }}
   
   
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
@@ -33,6 +32,8 @@ jobs:
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
       - uses: actions/checkout@v3
+      - name: env
+        exist: ${{ aws codecommit list-repositories|grep $repoName }}
       - name: multirun
         run: echo $exist
       #run: |
