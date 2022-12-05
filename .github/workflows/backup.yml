@@ -37,12 +37,4 @@ jobs:
       - name: Run a multi-line script
         run: |
           exist=$(aws codecommit list-repositories|grep $repoName)
-          if [ "$exist" = "" ];
-            then
-              echo $exist
-              echo "String is empty."
-          else
-              echo $exist
-              echo "String is not empty."
-          fi
-          echo "works"
+          echo $exist
