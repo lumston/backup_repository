@@ -36,6 +36,15 @@ jobs:
       # This script upload changes on codeCommit
       - name: Run a multi-line script
         run: |
+          exist=$(aws codecommit list-repositories|grep $repoName)
+          if [ "$exist" = "" ];
+            then
+            echo $exist
+            echo "String is empty."
+          else
+            echo $exist
+            echo "String is not empty."
+          fi
           git clone --mirror $source $repoName
           cd $repoName
           git push https://$user:$password@git-codecommit.us-east-1.amazonaws.com/v1/repos/$repoName --all
