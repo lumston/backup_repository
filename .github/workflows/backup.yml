@@ -49,7 +49,7 @@ jobs:
           echo $repoName
           aws codecommit list-repositories|grep $repoName
       - name: env
-        run:  if [ -f $(aws codecommit list-repositories|grep $repoName | cut -f2 -d ':'|cut -f1 -d ','|cut -f2 -d '"') != $repoName ] ; then echo "CREAR DE CERO" ; else echo "SUBIR"; fi
+        run:  if [ -f $(aws codecommit list-repositories|grep $repoName | cut -f2 -d ':'|cut -f1 -d ','|cut -f2 -d '"') != $repoName ] ; then aws codecommit create-repository --repository-name $repoName ; else echo "SUBIR"; fi
       #run: |
       # - uses: actions/checkout@v3
       #    exist=$(aws codecommit list-repositories|grep $repoName)
