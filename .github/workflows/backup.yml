@@ -33,9 +33,9 @@ jobs:
     steps:
       - uses: actions/checkout@v3
       - name: test
-        run: echo $(aws codecommit list-repositories|grep $repoName | cut -f2 -d ':'|cut -f1 -d ',')
+        run: echo $(aws codecommit list-repositories|grep $repoName | cut -f2 -d ':'|cut -f1 -d ','|cut -f2 -d '"')
       - name: env
-        run:  if [ -f $(aws codecommit list-repositories|grep $repoName | cut -f2 -d ':'|cut -f1 -d ',') != $repoName ] ; then echo "CREAR DE CERO" ; else echo "SUBIR"; fi
+        run:  if [ -f $(aws codecommit list-repositories|grep $repoName | cut -f2 -d ':'|cut -f1 -d ','|cut -f2 -d '"') != $repoName ] ; then echo "CREAR DE CERO" ; else echo "SUBIR"; fi
       #run: |
       # - uses: actions/checkout@v3
       #    exist=$(aws codecommit list-repositories|grep $repoName)
