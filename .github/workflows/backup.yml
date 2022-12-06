@@ -33,9 +33,7 @@ jobs:
     steps:
       - uses: actions/checkout@v3
       - name: env
-        run: exist = $( aws codecommit list-repositories|grep $repoName )
-      - name: multirun
-        run: echo $exist
+        run: if [ $(aws codecommit list-repositories|grep $repoName) -eq '' ] ; then echo "equal" ; else echo "not equal"
       #run: |
       # - uses: actions/checkout@v3
       #    exist=$(aws codecommit list-repositories|grep $repoName)
