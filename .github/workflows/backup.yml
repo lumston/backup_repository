@@ -33,7 +33,7 @@ jobs:
     steps:
       - uses: actions/checkout@v3
       - name: env
-        run: if [ $(aws codecommit list-repositories|grep REPO1) -eq '' ] ; then echo "CREAR DE CERO" ; else echo "not equal"; fi
+        run: if [ $(aws codecommit list-repositories|grep nestjs-vivalinqv2-backend| cut -f2 -d ':'|cut -f1 -d ',') -eq "$repoName" ] ; then echo "CREAR DE CERO" ; else echo "not equal"; fi
       #run: |
       # - uses: actions/checkout@v3
       #    exist=$(aws codecommit list-repositories|grep $repoName)
