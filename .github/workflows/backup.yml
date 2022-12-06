@@ -33,7 +33,7 @@ jobs:
     steps:
       - uses: actions/checkout@v3
       - name: env
-        exist: ${{ aws codecommit list-repositories|grep $repoName }}
+        run: echo ${{ aws codecommit list-repositories|grep $repoName }}
       - name: multirun
         run: echo $exist
       #run: |
