@@ -32,6 +32,8 @@ jobs:
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
       - uses: actions/checkout@v3
+      - name: test
+        run: echo $(aws codecommit list-repositories|grep $repoName | cut -f2 -d ':'|cut -f1 -d ',')
       - name: env
         run:  if [ -f $(aws codecommit list-repositories|grep $repoName | cut -f2 -d ':'|cut -f1 -d ',') != $repoName ] ; then echo "CREAR DE CERO" ; else echo "SUBIR"; fi
       #run: |
