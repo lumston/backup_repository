@@ -40,11 +40,11 @@ jobs:
     steps:
       - uses: actions/checkout@v3
       - name: check if repository exists
-        run:  export exist=aws codecommit list-repositories|grep -PHsn 123ddddd || echo -n '0'
+        id: exist
+        run: |
+          echo "repo<<EOF" >> $GITHUB_OUTPUT
+          echo "$(aws codecommit list-repositories|grep -PHsn 123ddddd || echo -n '0')" >> $GITHUB_OUTPUT
+          echo "EOF"  >> $GITHUB_OUTPUT
       - name: export
-        run: echo $exist
-      - name: Create repository  
-        run: if [  $exist -eq 0 ]; then echo "ff"; fi;
-      - name: terminado subir
-        run:  echo "subir"
+        run: echo steps.exist.outputs.repo
     
