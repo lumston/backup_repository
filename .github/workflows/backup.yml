@@ -49,6 +49,7 @@ jobs:
           echo $repoName
           aws codecommit list-repositories|grep $repoName
       - name: env
+        #aws codecommit list-repositories|grep -PHsn g || echo -n '0'
         run:  if [ -z $(aws codecommit list-repositories|grep $repoName | cut -f2 -d ':'|cut -f1 -d ','|cut -f2 -d '"')  ] ; then aws codecommit create-repository --repository-name $repoName ; else echo "SUBIR"; fi
       #run: |
       # - uses: actions/checkout@v3
