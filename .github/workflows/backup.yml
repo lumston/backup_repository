@@ -46,5 +46,6 @@ jobs:
         run: |
           echo "no existe"
           echo "crear"
-          echo "subir"
+      - name: terminado subir
+        run:  echo "subir"
     
