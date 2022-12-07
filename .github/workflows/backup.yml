@@ -42,10 +42,7 @@ jobs:
       - name: check if repository exists
         run:  export exist=aws codecommit list-repositories|grep -PHsn 123ddddd || echo -n '0'
       - name: Create repository  
-        if: ${{ $exist -eq 0 }}
-        run: |
-          echo "no existe"
-          echo "crear"
+        run: if [  $exist -eq 0 ]; then echo "ff"; fi;
       - name: terminado subir
         run:  echo "subir"
     
