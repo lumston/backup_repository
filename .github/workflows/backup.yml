@@ -36,7 +36,6 @@ jobs:
   build:
     # The type of runner that the job will run on
     runs-on: ubuntu-latest
-
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
       - uses: actions/checkout@v3
@@ -48,12 +47,4 @@ jobs:
           echo "no existe"
           echo "crear"
           echo "subir"
-        
-       
-      #run: |
-      # - uses: actions/checkout@v3
-      #    exist=$(aws codecommit list-repositories|grep $repoName)
-      #    echo $exist
-          #git clone --mirror $source $repoName
-          #cd $repoName
-          #git push https://$user:$password@git-codecommit.us-east-1.amazonaws.com/v1/repos/$repoName --all      
+    
