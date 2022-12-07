@@ -40,9 +40,9 @@ jobs:
     steps:
       - uses: actions/checkout@v3
       - name: check if repository exists
-        run: echo "$(aws codecommit list-repositories|grep -PHsn $repoName || echo -n '0')"
+        run:  export exist=aws codecommit list-repositories|grep -PHsn 123ddddd || echo -n '0'
       - name: Create repository  
-        if: ${{ aws codecommit list-repositories|grep -PHsn $repoName || echo -n '0' == 0 }}
+        if: ${{ $exist == 0 }}
         run: |
           echo "no existe"
           echo "crear"
