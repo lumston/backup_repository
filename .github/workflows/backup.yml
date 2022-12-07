@@ -43,7 +43,7 @@ jobs:
         id: exist
         run: |
           echo "repo<<EOF" >> $GITHUB_OUTPUT
-          echo "$(aws codecommit list-repositories|grep -PHsn 123ddddd || echo -n '0')" >> $GITHUB_OUTPUT
+          echo "$(aws codecommit list-repositories|grep -PHsn test_credentials_repo || echo -n '0')" >> $GITHUB_OUTPUT
           echo "EOF"  >> $GITHUB_OUTPUT
       - name: export
         if: ${{ steps.exist.outputs.repo == '0' }}
