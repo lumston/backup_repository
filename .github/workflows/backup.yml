@@ -46,5 +46,5 @@ jobs:
           echo "$(aws codecommit list-repositories|grep -PHsn 123ddddd || echo -n '0')" >> $GITHUB_OUTPUT
           echo "EOF"  >> $GITHUB_OUTPUT
       - name: export
-        run: echo steps.exist.outputs.repo
+        run: echo $steps.exist.outputs.repo
     
