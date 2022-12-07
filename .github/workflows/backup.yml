@@ -43,9 +43,14 @@ jobs:
         id: exist
         run: |
           echo "repo<<EOF" >> $GITHUB_OUTPUT
-          echo "$(aws codecommit list-repositories|grep -PHsn test_credentials_repo || echo -n '0')" >> $GITHUB_OUTPUT
+          echo "$(aws codecommit list-repositories|grep -PHsn $repoName || echo -n '0')" >> $GITHUB_OUTPUT
           echo "EOF"  >> $GITHUB_OUTPUT
-      - name: export
+      - name: Create repo if not exists
         if: ${{ steps.exist.outputs.repo == '0' }}
-        run: echo "hola mundo"
+        run: aws codecommit create-repository --repository-name $repoName
+      - name: push
+        run: |
+          git clone --mirror $source $repoName
+          cd $repoName
+          git push https://$user:$password@git-codecommit.us-east-1.amazonaws.com/v1/repos/$repoName --all
     
