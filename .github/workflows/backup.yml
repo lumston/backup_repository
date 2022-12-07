@@ -12,6 +12,11 @@ on:
         required: true
       TOKEN_GITHUB:
         required: true
+      AWS_CODECOMMIT_KEY:
+        required: true
+      AWS_CODECOMMIT_SECRET:
+        required: true
+     
   
   # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
@@ -20,6 +25,10 @@ env:
   source: https://${{secrets.TOKEN_GITHUB}}@github.com/lumston/${{ github.event.repository.name }}
   user: ${{secrets.USER_CODECOMMIT}}
   password: ${{secrets.PASSWORD_CODECOMMIT}}
+  AWS_DEFAULT_REGION: us-east-1
+  AWS_ACCESS_KEY_ID: ${{ secrets.AWS_CODECOMMIT_KEY }}
+  AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_CODECOMMIT_SECRET }}
+  
   
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
@@ -27,15 +36,21 @@ jobs:
   build:
     # The type of runner that the job will run on
     runs-on: ubuntu-latest
-
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
-      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - uses: actions/checkout@v3
-      # Run script 
-      # This script upload changes on codeCommit
-      - name: Run a multi-line script
+      - name: check if repository exists
+        id: exist
+        run: |
+          echo "repo<<EOF" >> $GITHUB_OUTPUT
+          echo "$(aws codecommit list-repositories|grep -PHsn $repoName || echo -n '0')" >> $GITHUB_OUTPUT
+          echo "EOF"  >> $GITHUB_OUTPUT
+      - name: Create repo if not exists
+        if: ${{ steps.exist.outputs.repo == '0' }}
+        run: aws codecommit create-repository --repository-name $repoName
+      - name: push
         run: |
           git clone --mirror $source $repoName
           cd $repoName
           git push https://$user:$password@git-codecommit.us-east-1.amazonaws.com/v1/repos/$repoName --all
+    
