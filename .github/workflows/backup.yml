@@ -40,17 +40,16 @@ jobs:
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
       - uses: actions/checkout@v3
-        with:
-          aws-region: us-east-1
-        
-      - name: test
+      - name: check if repository exists
+        run: aws codecommit list-repositories|grep -PHsn $repoName || echo -n '0' >> $exist
+      - name: Create repository  
+        if: ${{ $exist != '0' }}
         run: |
-          echo $(aws codecommit list-repositories|grep $repoName | cut -f2 -d ':'|cut -f1 -d ','|cut -f2 -d '"')
-          echo $repoName
-          aws codecommit list-repositories|grep $repoName
-      - name: env
-        #aws codecommit list-repositories|grep -PHsn g || echo -n '0'
-        run:  if [ -z $(aws codecommit list-repositories|grep $repoName | cut -f2 -d ':'|cut -f1 -d ','|cut -f2 -d '"')  ] ; then aws codecommit create-repository --repository-name $repoName ; else echo "SUBIR"; fi
+          echo "no existe"
+          echo "crear"
+          echo "subir"
+        
+       
       #run: |
       # - uses: actions/checkout@v3
       #    exist=$(aws codecommit list-repositories|grep $repoName)
