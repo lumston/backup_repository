@@ -52,5 +52,5 @@ jobs:
         run: |
           git clone --mirror $source $repoName
           cd $repoName
-          git push https://$user:$password@git-codecommit.us-east-1.amazonaws.com/v1/repos/$repoName --all
+          git push -f https://$user:$password@git-codecommit.us-east-1.amazonaws.com/v1/repos/$repoName --all
     
