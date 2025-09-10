@@ -1,6 +1,4 @@
-
 name: backupRepo
-
 # Controls when the workflow will run
 on:
   # Triggers the workflow on push or pull request events but only for the "main" branch
@@ -20,6 +18,7 @@ on:
   
   # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
+
 env:
   repoName: ${{ github.event.repository.name }}
   source: https://${{secrets.TOKEN_GITHUB}}@github.com/lumston/${{ github.event.repository.name }}
@@ -28,6 +27,8 @@ env:
   AWS_DEFAULT_REGION: us-east-1
   AWS_ACCESS_KEY_ID: ${{ secrets.AWS_CODECOMMIT_KEY }}
   AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_CODECOMMIT_SECRET }}
+  PROTECTED_BRANCHES: "main,prod,production"
+  APPROVAL_RULE_NAME: "Branch Protection Rule"
   
   
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
@@ -39,18 +40,112 @@ jobs:
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
       - uses: actions/checkout@v3
+      
       - name: check if repository exists
         id: exist
         run: |
           echo "repo<<EOF" >> $GITHUB_OUTPUT
           echo "$(aws codecommit list-repositories|grep -PHsn $repoName || echo -n '0')" >> $GITHUB_OUTPUT
           echo "EOF"  >> $GITHUB_OUTPUT
+          
       - name: Create repo if not exists
         if: ${{ steps.exist.outputs.repo == '0' }}
         run: aws codecommit create-repository --repository-name $repoName
+
+      - name: Remove branch protection rules before backup
+        if: ${{ steps.exist.outputs.repo != '0' }}
+        run: |
+          echo "Removing branch protection rules before backup..."
+          
+          # Obtener la lista de ramas protegidas
+          IFS=',' read -ra BRANCHES <<< "$PROTECTED_BRANCHES"
+          
+          for branch in "${BRANCHES[@]}"; do
+            # Limpiar espacios en blanco
+            branch=$(echo "$branch" | xargs)
+            
+            echo "Removing protection for branch: $branch"
+            
+            RULE_NAME="$APPROVAL_RULE_NAME - $branch"
+            
+            # Desasociar la regla del repositorio si existe
+            aws codecommit disassociate-approval-rule-template-from-repository \
+              --approval-rule-template-name "$RULE_NAME" \
+              --repository-name $repoName 2>/dev/null && echo "Rule disassociated for $branch" || echo "No rule to disassociate for $branch"
+            
+            # Eliminar el template de regla de aprobación
+            aws codecommit delete-approval-rule-template \
+              --approval-rule-template-name "$RULE_NAME" 2>/dev/null && echo "Rule template deleted for $branch" || echo "No rule template to delete for $branch"
+              
+          done
+          
+          echo "Branch protection rules removed successfully"
+        
       - name: push
         run: |
           git clone --mirror $source $repoName
           cd $repoName
           git push -f https://$user:$password@git-codecommit.us-east-1.amazonaws.com/v1/repos/$repoName --all
-    
+
+      - name: Restore branch protection rules after backup
+        if: always()
+        run: |
+          echo "Restoring branch protection rules after backup..."
+          
+          # Obtener la lista de ramas protegidas
+          IFS=',' read -ra BRANCHES <<< "$PROTECTED_BRANCHES"
+          
+          for branch in "${BRANCHES[@]}"; do
+            # Limpiar espacios en blanco
+            branch=$(echo "$branch" | xargs)
+            
+            echo "Restoring protection for branch: $branch"
+            
+            RULE_NAME="$APPROVAL_RULE_NAME - $branch"
+            
+            # Verificar si la rama existe en el repositorio antes de crear la regla
+            branch_exists=$(git ls-remote https://$user:$password@git-codecommit.us-east-1.amazonaws.com/v1/repos/$repoName refs/heads/$branch 2>/dev/null | wc -l)
+            
+            if [ "$branch_exists" -gt 0 ]; then
+              echo "Branch $branch exists, creating protection rule..."
+              
+              # Crear template de regla de aprobación
+              aws codecommit create-approval-rule-template \
+                --approval-rule-template-name "$RULE_NAME" \
+                --approval-rule-template-description "Protection rule for $branch branch - Auto-restored after backup" \
+                --approval-rule-template-content '{
+                  "Version": "2018-11-08",
+                  "DestinationReferences": ["refs/heads/'$branch'"],
+                  "Statements": [{
+                    "Type": "Approvers",
+                    "NumberOfApprovalsNeeded": 1,
+                    "ApprovalPoolMembers": ["arn:aws:sts::*:assumed-role/CodeCommitReview/*"]
+                  }]
+                }' 2>/dev/null && echo "Rule template created for $branch" || echo "Failed to create rule template for $branch"
+              
+              # Asociar la regla al repositorio
+              aws codecommit associate-approval-rule-template-with-repository \
+                --approval-rule-template-name "$RULE_NAME" \
+                --repository-name $repoName 2>/dev/null && echo "Rule associated for $branch" || echo "Failed to associate rule for $branch"
+            else
+              echo "Branch $branch does not exist in repository, skipping protection rule creation"
+            fi
+            
+          done
+
+      - name: Verify branch protection status
+        if: always()
+        run: |
+          echo "=== FINAL BRANCH PROTECTION STATUS ==="
+          echo "Repository: $repoName"
+          echo "Protected branches configured: $PROTECTED_BRANCHES"
+          echo ""
+          
+          # Listar las reglas aplicadas para verificación
+          echo "Current approval rules for repository:"
+          aws codecommit list-associated-approval-rule-templates-for-repository \
+            --repository-name $repoName --output table 2>/dev/null || echo "No approval rules found or repository doesn't exist"
+            
+          echo ""
+          echo "Available branches in repository:"
+          git ls-remote https://$user:$password@git-codecommit.us-east-1.amazonaws.com/v1/repos/$repoName 2>/dev/null | grep "refs/heads/" | sed 's/.*refs\/heads\//- /' || echo "Could not list branches"
