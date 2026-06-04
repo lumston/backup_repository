@@ -48,8 +48,16 @@ jobs:
       - name: Create repo if not exists
         if: ${{ steps.exist.outputs.repo == '0' }}
         run: aws codecommit create-repository --repository-name $repoName
+      - name: Encode credentials
+        run: |
+          encoded_user=$(python3 -c 'import urllib.parse,sys; print(urllib.parse.quote(sys.argv[1],safe=""))' "$user")
+          encoded_password=$(python3 -c 'import urllib.parse,sys; print(urllib.parse.quote(sys.argv[1],safe=""))' "$password")
+          echo "::add-mask::$encoded_user"
+          echo "::add-mask::$encoded_password"
+          echo "encoded_user=$encoded_user" >> $GITHUB_ENV
+          echo "encoded_password=$encoded_password" >> $GITHUB_ENV
       - name: push
         run: |
           git clone --mirror $source $repoName
           cd $repoName
-          git push -f https://$user:$password@git-codecommit.us-east-1.amazonaws.com/v1/repos/$repoName --all
+          git push -f https://$encoded_user:$encoded_password@git-codecommit.us-east-1.amazonaws.com/v1/repos/$repoName --all
