@@ -81,18 +81,26 @@ jobs:
           
           echo "Branch protection rules removed successfully"
         
-      - name: Encode credentials
+      - name: Setup git credentials
         run: |
-          encoded_user=$(python3 -c 'import urllib.parse,sys; print(urllib.parse.quote(sys.argv[1],safe=""))' "$user")
-          encoded_password=$(python3 -c 'import urllib.parse,sys; print(urllib.parse.quote(sys.argv[1],safe=""))' "$password")
-          echo "encoded_user=$encoded_user" >> $GITHUB_ENV
-          echo "encoded_password=$encoded_password" >> $GITHUB_ENV
+          cat > /tmp/git-askpass.sh << 'EOF'
+          #!/bin/sh
+          case "$1" in
+            *sername*) echo "$GIT_CRED_USER" ;;
+            *assword*) echo "$GIT_CRED_PASS" ;;
+          esac
+          EOF
+          chmod +x /tmp/git-askpass.sh
+          echo "GIT_ASKPASS=/tmp/git-askpass.sh" >> $GITHUB_ENV
+          echo "GIT_TERMINAL_PROMPT=0" >> $GITHUB_ENV
+          echo "GIT_CRED_USER=$user" >> $GITHUB_ENV
+          echo "GIT_CRED_PASS=$password" >> $GITHUB_ENV
 
       - name: push
         run: |
           git clone --mirror $source $repoName
           cd $repoName
-          git push -f https://$encoded_user:$encoded_password@git-codecommit.us-east-1.amazonaws.com/v1/repos/$repoName --all
+          git push -f https://git-codecommit.us-east-1.amazonaws.com/v1/repos/$repoName --all
 
       - name: Restore branch protection rules after backup
         if: always()
@@ -111,7 +119,7 @@ jobs:
             RULE_NAME="$APPROVAL_RULE_NAME - $branch"
             
             # Verificar si la rama existe en el repositorio antes de crear la regla
-            branch_exists=$(git ls-remote https://$encoded_user:$encoded_password@git-codecommit.us-east-1.amazonaws.com/v1/repos/$repoName refs/heads/$branch 2>/dev/null | wc -l)
+            branch_exists=$(git ls-remote https://git-codecommit.us-east-1.amazonaws.com/v1/repos/$repoName refs/heads/$branch 2>/dev/null | wc -l)
             
             if [ "$branch_exists" -gt 0 ]; then
               echo "Branch $branch exists, creating protection rule..."
@@ -155,4 +163,4 @@ jobs:
             
           echo ""
           echo "Available branches in repository:"
-          git ls-remote https://$encoded_user:$encoded_password@git-codecommit.us-east-1.amazonaws.com/v1/repos/$repoName 2>/dev/null | grep "refs/heads/" | sed 's/.*refs\/heads\//- /' || echo "Could not list branches"
+          git ls-remote https://git-codecommit.us-east-1.amazonaws.com/v1/repos/$repoName 2>/dev/null | grep "refs/heads/" | sed 's/.*refs\/heads\//- /' || echo "Could not list branches"
